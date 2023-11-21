@@ -12,7 +12,6 @@ public interface FilmService {
 
     FilmDto createFilm(FilmDto filmDto);
 
-
     ContentRatingDto getContentRatingByFilmId(Integer id);
 
     List<CategoryDto>getAllCategoriesByFilmId(Integer id);

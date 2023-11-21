@@ -64,8 +64,8 @@ public class FilmServiceImpl implements FilmService {
         validateFilm(filmDto);
         existsFilmByTitle(filmDto.getTitle());
 
-        //ContentRating contentRating = contentRatingRepository.findById(filmDto.getContentRating().getId()).orElse(null);
-        //filmDto.setContentRating(contentRating);
+        ContentRating contentRating = contentRatingRepository.findById(filmDto.getContentRating().getId()).orElse(null);
+        filmDto.setContentRating(contentRating);
 
         Film film = DtoToEntity(filmDto);
         return EntityToDto(filmRepository.save(film));
@@ -134,6 +134,9 @@ public class FilmServiceImpl implements FilmService {
         }
         if(film.getYear() == null || film.getYear() <= 0) {
             throw new ResourceValidationException("El año de la película no puede estar vacío");
+        }
+        if(film.getContentRating() == null) {
+            throw new ResourceValidationException("La clasificación de la película no puede estar vacío");
         }
     }
     void existsFilmByTitle(String title) {
