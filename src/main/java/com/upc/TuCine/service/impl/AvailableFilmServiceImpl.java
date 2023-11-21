@@ -86,7 +86,7 @@ public class AvailableFilmServiceImpl implements AvailableFilmService {
         validateAvailableFilm(availableFilmDto);
         existsBusinessById(availableFilmDto.getBusiness().getId());
         existsFilmById(availableFilmDto.getFilm().getId());
-        existsPromotionById(availableFilmDto.getPromotion().getId());
+        //existsPromotionById(availableFilmDto.getPromotion().getId());
 
         Business business = businessRepository.findById(availableFilmDto.getBusiness().getId()).orElse(null);
         availableFilmDto.setBusiness(business);
