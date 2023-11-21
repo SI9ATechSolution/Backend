@@ -94,8 +94,14 @@ public class AvailableFilmServiceImpl implements AvailableFilmService {
         Film film = filmRepository.findById(availableFilmDto.getFilm().getId()).orElse(null);
         availableFilmDto.setFilm(film);
 
-        //Promotion promotion = promotionRepository.findById(availableFilmDto.getPromotion().getId()).orElse(null);
-        //availableFilmDto.setPromotion(promotion);
+        Promotion promotion;
+        try {
+            promotion = promotionRepository.findById(availableFilmDto.getPromotion().getId()).orElse(null);
+        } catch (Exception e) {
+            promotion = null;
+        }
+
+        availableFilmDto.setPromotion(promotion);
 
         availableFilmToUpdate.setBusiness(availableFilmDto.getBusiness());
         availableFilmToUpdate.setFilm(availableFilmDto.getFilm());
