@@ -64,7 +64,8 @@ public class FilmServiceImpl implements FilmService {
         validateFilm(filmDto);
         existsFilmByTitle(filmDto.getTitle());
 
-        ContentRating contentRating = contentRatingRepository.findById(filmDto.getContentRating().getId()).orElse(null);
+        //ContentRating contentRating = contentRatingRepository.findById(filmDto.getContentRating().getId()).orElse(null);
+        ContentRating contentRating = null;
         //filmDto.setContentRating(contentRating);
 
         Film film = DtoToEntity(filmDto);
