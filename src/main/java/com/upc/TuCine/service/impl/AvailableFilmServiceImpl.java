@@ -94,8 +94,8 @@ public class AvailableFilmServiceImpl implements AvailableFilmService {
         Film film = filmRepository.findById(availableFilmDto.getFilm().getId()).orElse(null);
         availableFilmDto.setFilm(film);
 
-        Promotion promotion = promotionRepository.findById(availableFilmDto.getPromotion().getId()).orElse(null);
-        availableFilmDto.setPromotion(promotion);
+        //Promotion promotion = promotionRepository.findById(availableFilmDto.getPromotion().getId()).orElse(null);
+        //availableFilmDto.setPromotion(promotion);
 
         availableFilmToUpdate.setBusiness(availableFilmDto.getBusiness());
         availableFilmToUpdate.setFilm(availableFilmDto.getFilm());
@@ -127,9 +127,11 @@ public class AvailableFilmServiceImpl implements AvailableFilmService {
         if (availableFilmDto.getIsAvailable() == null) {
             throw new ResourceValidationException("isAvailable es requerido");
         }
+        /*
         if (availableFilmDto.getPromotion() == null) {
             throw new ResourceValidationException("Promotion id es requerido");
         }
+        */
     }
 
     private void existsBusinessById(Integer id) {
