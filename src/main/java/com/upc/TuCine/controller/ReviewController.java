@@ -37,4 +37,12 @@ public class ReviewController {
     public ResponseEntity<List<ReviewDto>> getAllByBusinessId(@PathVariable(value = "businessId") Integer businessId) {
         return new ResponseEntity<>(reviewService.getReviewsByBusinessId(businessId), HttpStatus.OK);
     }
+
+    // Delete review
+    @Transactional(readOnly = true)
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity<ReviewDto> deleteReview(@PathVariable(value = "reviewId") Integer reviewId) {
+        return new ResponseEntity<>(reviewService.deleteReview(reviewId), HttpStatus.OK);
+    }
+    
 }

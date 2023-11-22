@@ -65,6 +65,19 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public ReviewDto deleteReview(Integer reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElse(null);
+        Business businessToUpdate = businessRepository.findById(review.getBusiness().getId()).orElse(null);
+        Float newRating = ((businessToUpdate.getRating() * businessToUpdate.getCommentsCount()) - review.getRating())/(businessToUpdate.getCommentsCount() - 1);
+        businessToUpdate.setRating(newRating);
+        businessToUpdate.setCommentsCount(businessToUpdate.getCommentsCount() - 1);
+
+        businessRepository.save(businessToUpdate);
+        reviewRepository.deleteById(reviewId);
+        return EntityToDto(review);
+    }
+
+    @Override
     public ReviewDto createReview(ReviewDto reviewDto) {
 
         validateReview(reviewDto);
@@ -103,4 +116,5 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ResourceValidationException("El usuario no puede ser nulo");
         }
     }
+
 }
