@@ -1,7 +1,9 @@
 package com.upc.TuCine.service.impl;
 
+import com.upc.TuCine.dto.PromotionDto;
 import com.upc.TuCine.dto.ReviewDto;
 import com.upc.TuCine.model.Business;
+import com.upc.TuCine.model.Promotion;
 import com.upc.TuCine.model.Review;
 import com.upc.TuCine.repository.BusinessRepository;
 import com.upc.TuCine.repository.ReviewRepository;
@@ -67,13 +69,26 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewDto deleteReview(Integer reviewId) {
         Review review = reviewRepository.findById(reviewId).orElse(null);
-        Business businessToUpdate = businessRepository.findById(review.getBusiness().getId()).orElse(null);
-        Float newRating = ((businessToUpdate.getRating() * businessToUpdate.getCommentsCount()) - review.getRating())/(businessToUpdate.getCommentsCount() - 1);
-        businessToUpdate.setRating(newRating);
-        businessToUpdate.setCommentsCount(businessToUpdate.getCommentsCount() - 1);
 
-        businessRepository.save(businessToUpdate);
-        reviewRepository.deleteById(reviewId);
+        System.out.println("Review inicial: " + review);
+
+        if (review == null) {
+            return null;
+        }
+        Business businessToUpdate = businessRepository.findById(review.getBusiness().getId()).orElse(null);
+        if (businessToUpdate != null && businessToUpdate.getCommentsCount() > 1) {
+            Float newRating = ((businessToUpdate.getRating() * businessToUpdate.getCommentsCount()) - review.getRating()) / (businessToUpdate.getCommentsCount() - 1);
+            businessToUpdate.setRating(newRating);
+            businessToUpdate.setCommentsCount(businessToUpdate.getCommentsCount() - 1);
+            businessRepository.save(businessToUpdate);
+        }
+        else if (businessToUpdate != null && businessToUpdate.getCommentsCount() == 1) {
+            businessToUpdate.setRating(0.0f);
+            businessToUpdate.setCommentsCount(0);
+            businessRepository.save(businessToUpdate);
+        }
+        System.out.println("Review final: " + review);
+        reviewRepository.delete(review);
         return EntityToDto(review);
     }
 
