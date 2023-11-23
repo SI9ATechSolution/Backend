@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,29 +69,32 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDto deleteReview(Integer reviewId) {
-        Review review = reviewRepository.findById(reviewId).orElse(null);
+        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
 
-        System.out.println("Review inicial: " + review);
+        if (optionalReview.isPresent()) {
+            Review review = optionalReview.get();
+            Business businessToUpdate = review.getBusiness();
 
-        if (review == null) {
-            return null;
+            if (businessToUpdate != null) {
+                if (businessToUpdate.getCommentsCount() > 1) {
+                    Float newRating = ((businessToUpdate.getRating() * businessToUpdate.getCommentsCount()) - review.getRating()) / (businessToUpdate.getCommentsCount() - 1);
+                    businessToUpdate.setRating(newRating);
+                    businessToUpdate.setCommentsCount(businessToUpdate.getCommentsCount() - 1);
+                } else {
+                    businessToUpdate.setRating(0.0f);
+                    businessToUpdate.setCommentsCount(0);
+                }
+
+                businessRepository.save(businessToUpdate);
+            }
+
+            reviewRepository.delete(review);
+            return EntityToDto(review);
         }
-        Business businessToUpdate = businessRepository.findById(review.getBusiness().getId()).orElse(null);
-        if (businessToUpdate != null && businessToUpdate.getCommentsCount() > 1) {
-            Float newRating = ((businessToUpdate.getRating() * businessToUpdate.getCommentsCount()) - review.getRating()) / (businessToUpdate.getCommentsCount() - 1);
-            businessToUpdate.setRating(newRating);
-            businessToUpdate.setCommentsCount(businessToUpdate.getCommentsCount() - 1);
-            businessRepository.save(businessToUpdate);
-        }
-        else if (businessToUpdate != null && businessToUpdate.getCommentsCount() == 1) {
-            businessToUpdate.setRating(0.0f);
-            businessToUpdate.setCommentsCount(0);
-            businessRepository.save(businessToUpdate);
-        }
-        System.out.println("Review final: " + review);
-        reviewRepository.delete(review);
-        return EntityToDto(review);
+
+        return null;
     }
+
 
     @Override
     public ReviewDto createReview(ReviewDto reviewDto) {

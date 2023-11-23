@@ -1,6 +1,7 @@
 package com.upc.TuCine.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.upc.TuCine.user.domain.model.entity.User;
 import lombok.AllArgsConstructor;
@@ -43,6 +44,6 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "business_id", foreignKey = @ForeignKey(name = "FK_REVIEW_BUSINESS"))
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     private Business business;
 }
