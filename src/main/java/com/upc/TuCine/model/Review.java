@@ -44,6 +44,6 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "business_id", foreignKey = @ForeignKey(name = "FK_REVIEW_BUSINESS"))
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Business business;
 }
